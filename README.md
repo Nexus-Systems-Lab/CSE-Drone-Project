@@ -16,7 +16,7 @@ Play the 44-second demonstration below, directly on this repository page.
 
 https://github.com/user-attachments/assets/06ee024c-3a24-49d9-be64-d7df85800d6f
 
-Actual prototype footage · HeyGen English technical narration · Original background song removed
+Actual prototype footage · English technical narration · Original background song removed
 
 [Subtitles](media/captions.srt) · [Transcript and scene guide](docs/video-guide.md)
 
@@ -161,7 +161,7 @@ A meaningful physical comparison needs timestamped setpoint, estimated angle, an
 | Location | Contents |
 | --- | --- |
 | [`media/`](media/) | Subtitle sidecar; the demonstration plays inline above |
-| [`docs/video-guide.md`](docs/video-guide.md) | Video transcript, scene map, and production notes |
+| [`docs/video-guide.md`](docs/video-guide.md) | Video transcript, scene map, and technical context |
 | [`assets/`](assets/) | Prototype photos, dashboard screenshots, and simulation figure extracted from the group report |
 
 The final firmware, raw test logs, and the assignment PDF are not currently included. Documentation distinguishes reported settings, simulated results, and observed prototype footage from validated physical performance.

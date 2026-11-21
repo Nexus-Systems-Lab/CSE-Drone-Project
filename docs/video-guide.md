@@ -4,7 +4,7 @@
 
 [Watch the 44-second technical voice guide on the repository page](../README.md#watch-the-project-demo) · [Subtitles](../media/captions.srt)
 
-This video uses the team's actual 2026 prototype footage. The original background-song audio track was removed in full. The only audio in the published cut is an English voice guide synthesized with HeyGen Voice. Captions were timed from the generated narration's word timestamps. The picture remains in its source order at normal speed; the export is 720 × 1280 pixels, 60 fps, H.264/AAC MP4.
+This video uses the team's actual 2026 prototype footage. The original background-song audio track was removed in full and replaced with an English technical voice guide. Captions follow the narration. The picture remains in its source order at normal speed; the export is 720 × 1280 pixels, 60 fps, H.264/AAC MP4.
 
 | Approximate source time | Visible material | Explanation |
 | --- | --- | --- |
@@ -23,4 +23,4 @@ This video uses the team's actual 2026 prototype footage. The original backgroun
 
 The source video's end card is titled **“Drone Hover Test.”** The visible test footage shows the powered prototype and interface but does not, by itself, establish quantified stable free-flight hover. The group report describes the roll/pitch controller and normalized Simulink results, while Section 6 says automatic height control is not implemented. The voice guide states these limits so the video is not presented as proof of an unmeasured result.
 
-The prototype video and images are original project material. The poster image is a designed cover made from a frame of the same source video, not an AI-generated drone image.
+The prototype footage and report images document the team's project. The video explains the control setup without presenting the footage as quantified flight-performance evidence.
