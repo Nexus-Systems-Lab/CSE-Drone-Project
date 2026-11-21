@@ -14,18 +14,9 @@ A physical ESP32-based quadcopter and a normalized MATLAB/Simulink study of roll
 
 Play the 44-second demonstration below, directly on this repository page.
 
-<table width="100%">
-  <tr><th colspan="3">Project demonstration</th></tr>
-  <tr>
-    <td width="29%">&nbsp;</td>
-    <td width="42%" markdown="1">
-
-https://github.com/user-attachments/assets/06ee024c-3a24-49d9-be64-d7df85800d6f
-
-    </td>
-    <td width="29%">&nbsp;</td>
-  </tr>
-</table>
+| &emsp;&emsp;&emsp; | Project demonstration | &emsp;&emsp;&emsp; |
+| :---: | :---: | :---: |
+| &emsp;&emsp;&emsp; | https://github.com/user-attachments/assets/06ee024c-3a24-49d9-be64-d7df85800d6f | &emsp;&emsp;&emsp; |
 
 Actual prototype footage · English technical narration · Original background song removed
 
