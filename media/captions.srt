@@ -1,0 +1,55 @@
+1
+00:00:00,299 --> 00:00:04,181
+This is our ESP32 quadcopter
+control prototype.
+
+2
+00:00:04,779 --> 00:00:06,187
+The OLED displays its state,
+
+3
+00:00:06,613 --> 00:00:11,349
+while an MPU6050 measures
+acceleration and angular rate.
+
+4
+00:00:11,972 --> 00:00:16,110
+The controller estimates roll and pitch,
+compares both with zero degrees,
+
+5
+00:00:16,665 --> 00:00:19,652
+then mixes corrections into
+four ESC commands.
+
+6
+00:00:20,334 --> 00:00:23,791
+Here, the dashboard adjusts motor output
+and plots the response.
+
+7
+00:00:24,716 --> 00:00:27,362
+The reported gains are P: one point five,
+
+8
+00:00:27,874 --> 00:00:31,415
+I: zero, and D: zero point zero five,
+
+9
+00:00:31,884 --> 00:00:33,079
+so this is P D control.
+
+10
+00:00:33,932 --> 00:00:36,194
+The loop is scheduled every
+ten milliseconds.
+
+11
+00:00:36,765 --> 00:00:39,325
+The motor test demonstrates
+the prototype hardware;
+
+12
+00:00:39,837 --> 00:00:44,061
+stable hover and automatic altitude hold
+still require separate validation.

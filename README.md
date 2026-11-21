@@ -10,6 +10,19 @@ A physical ESP32-based quadcopter and a normalized MATLAB/Simulink study of roll
 
 </div>
 
+## Watch the project demo
+
+<div align="center">
+  <a href="https://github.com/Uvin-Kaveesh/CSE-Drone-Project/releases/download/demo-2026/drone_project_technical_voice_guide.mp4">
+    <img src="media/video-cover.jpg" alt="Play the 44-second quadcopter prototype demonstration" width="320">
+  </a>
+  <p><strong><a href="https://github.com/Uvin-Kaveesh/CSE-Drone-Project/releases/download/demo-2026/drone_project_technical_voice_guide.mp4">▶ Watch or download the 44-second video</a></strong></p>
+  <p>Actual prototype footage · HeyGen English technical narration · Original background song removed</p>
+  <p><a href="media/captions.srt">Download subtitles</a> · <a href="docs/video-guide.md">Read transcript and scene guide</a> · <a href="https://github.com/Uvin-Kaveesh/CSE-Drone-Project/releases/tag/demo-2026">View release</a></p>
+</div>
+
+The video shows the OLED state, Wi-Fi motor controls and response plots, and a powered prototype test. Its original end card says “Drone Hover Test”; the visible footage and report do not provide a measured free-flight validation of stable hover. The narration makes that distinction explicit.
+
 <p align="center">
   <img src="assets/prototype-top.jpg" alt="Top view of the team's quadcopter prototype, reproduced from the project report" width="47%">
   <img src="assets/prototype-test-rig.jpg" alt="The team's quadcopter prototype on its test stand, reproduced from the project report" width="47%">
@@ -21,6 +34,7 @@ A physical ESP32-based quadcopter and a normalized MATLAB/Simulink study of roll
 
 ## Contents
 
+- [Watch the project demo](#watch-the-project-demo)
 - [What the system does](#what-the-system-does)
 - [Control architecture](#control-architecture)
 - [Hardware and connections](#hardware-and-connections)
@@ -28,6 +42,7 @@ A physical ESP32-based quadcopter and a normalized MATLAB/Simulink study of roll
 - [Controller and motor mixing](#controller-and-motor-mixing)
 - [Simulation and experimental evidence](#simulation-and-experimental-evidence)
 - [Known gaps and verification plan](#known-gaps-and-verification-plan)
+- [Repository contents](#repository-contents)
 - [References](#references)
 
 ## What the system does
@@ -141,6 +156,16 @@ A meaningful physical comparison needs timestamped setpoint, estimated angle, an
 5. **Log repeatable tests:** separate restrained-test data from free-flight data and state the test conditions.
 6. **Treat height hold as future work until proven:** document the ultrasonic sensor model, valid range, tilt compensation, out-of-range behavior and a tested altitude loop before claiming automatic height control.
 7. **Expand control scope explicitly:** yaw stabilization and horizontal position hold need additional feedback/control and are not demonstrated by roll/pitch balancing alone.
+
+## Repository contents
+
+| Location | Contents |
+| --- | --- |
+| [`media/`](media/) | Source-footage cover and subtitle sidecar; the 14 MB video is hosted as a [GitHub release](https://github.com/Uvin-Kaveesh/CSE-Drone-Project/releases/tag/demo-2026) |
+| [`docs/video-guide.md`](docs/video-guide.md) | Video transcript, scene map, and production notes |
+| [`assets/`](assets/) | Prototype photos, dashboard screenshots, and simulation figure extracted from the group report |
+
+The final firmware, raw test logs, and the assignment PDF are not currently included. Documentation distinguishes reported settings, simulated results, and observed prototype footage from validated physical performance.
 
 ## References
 
