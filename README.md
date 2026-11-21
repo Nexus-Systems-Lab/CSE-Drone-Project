@@ -1,6 +1,49 @@
+<div align="center">
+
 # CSE Drone Project
 
-IE3034 Control System Engineering group assignment: ESP32-based X-frame quadcopter prototype for roll and pitch stabilization.
+### ESP32-Based Quadcopter Attitude Stabilization
+
+**IE3034 · Control System Engineering · Group 01**
+
+An engineering prototype exploring feedback control for roll and pitch stabilization.
+
+</div>
+
+![Concept visualization of the quadcopter on an electronics workbench](assets/drone-concept-hero.jpg)
+
+> **Visual note:** The photographs in this README are AI-generated concept visuals. They illustrate the project architecture and are not photographs of the team's physical prototype or experimental evidence.
+
+## At a glance
+
+| Platform | Control focus | Current evidence |
+| --- | --- | --- |
+| ESP32, MPU6050, four brushless motors and a 4-in-1 ESC | Roll and pitch stabilization with PD settings | Normalized Simulink responses; physical performance still requires measured logs |
+
+**Quick links:** [Architecture](#control-architecture) · [Hardware](#hardware-and-control-path) · [Model](#model-and-simulation) · [Implementation status](#implementation-status-and-discrepancies) · [Verification plan](#next-verification-steps)
+
+## Control architecture
+
+```mermaid
+flowchart LR
+    S["Roll / pitch setpoints<br/>0°"] --> E["Error"]
+    I["MPU6050<br/>accelerometer + gyroscope"] --> F["Angle estimation"]
+    F --> E
+    E --> C["PD control<br/>Kp 1.5 · Ki 0 · Kd 0.05"]
+    C --> M["Motor mixer"]
+    T["Manual base throttle"] --> M
+    M --> X["4-in-1 ESC"]
+    X --> P["Four motors + propellers"]
+    P --> I
+```
+
+The diagram reflects the documented roll/pitch path. Automatic height control is described as a goal in the report but is stated as unimplemented in Section 6.
+
+<div align="center">
+  <img src="assets/drone-electronics-concept.jpg" alt="Concept visualization of ESP32, IMU and ESC electronics on a quadcopter frame" width="760">
+  <br>
+  <sub>Concept visualization of the electronics layout; not a photo of the built prototype.</sub>
+</div>
 
 ## Hardware and control path
 
