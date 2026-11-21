@@ -12,14 +12,13 @@ A physical ESP32-based quadcopter and a normalized MATLAB/Simulink study of roll
 
 ## Watch the project demo
 
-<div align="center">
-  <a href="https://github.com/Uvin-Kaveesh/CSE-Drone-Project/releases/download/demo-2026/drone_project_technical_voice_guide.mp4">
-    <img src="media/video-cover.jpg" alt="Play the 44-second quadcopter prototype demonstration" width="320">
-  </a>
-  <p><strong><a href="https://github.com/Uvin-Kaveesh/CSE-Drone-Project/releases/download/demo-2026/drone_project_technical_voice_guide.mp4">▶ Watch or download the 44-second video</a></strong></p>
-  <p>Actual prototype footage · HeyGen English technical narration · Original background song removed</p>
-  <p><a href="media/captions.srt">Download subtitles</a> · <a href="docs/video-guide.md">Read transcript and scene guide</a> · <a href="https://github.com/Uvin-Kaveesh/CSE-Drone-Project/releases/tag/demo-2026">View release</a></p>
-</div>
+Play the 44-second demonstration below, directly on this repository page.
+
+https://github.com/user-attachments/assets/06ee024c-3a24-49d9-be64-d7df85800d6f
+
+Actual prototype footage · HeyGen English technical narration · Original background song removed
+
+[Subtitles](media/captions.srt) · [Transcript and scene guide](docs/video-guide.md)
 
 The video shows the OLED state, Wi-Fi motor controls and response plots, and a powered prototype test. Its original end card says “Drone Hover Test”; the visible footage and report do not provide a measured free-flight validation of stable hover. The narration makes that distinction explicit.
 
@@ -161,7 +160,7 @@ A meaningful physical comparison needs timestamped setpoint, estimated angle, an
 
 | Location | Contents |
 | --- | --- |
-| [`media/`](media/) | Source-footage cover and subtitle sidecar; the 14 MB video is hosted as a [GitHub release](https://github.com/Uvin-Kaveesh/CSE-Drone-Project/releases/tag/demo-2026) |
+| [`media/`](media/) | Subtitle sidecar; the demonstration plays inline above |
 | [`docs/video-guide.md`](docs/video-guide.md) | Video transcript, scene map, and production notes |
 | [`assets/`](assets/) | Prototype photos, dashboard screenshots, and simulation figure extracted from the group report |
 

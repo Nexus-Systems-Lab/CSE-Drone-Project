@@ -2,7 +2,7 @@
 
 ## Demonstration
 
-[Watch or download the 44-second technical voice guide](https://github.com/Uvin-Kaveesh/CSE-Drone-Project/releases/download/demo-2026/drone_project_technical_voice_guide.mp4) · [Download subtitles](../media/captions.srt)
+[Watch the 44-second technical voice guide on the repository page](../README.md#watch-the-project-demo) · [Subtitles](../media/captions.srt)
 
 This video uses the team's actual 2026 prototype footage. The original background-song audio track was removed in full. The only audio in the published cut is an English voice guide synthesized with HeyGen Voice. Captions were timed from the generated narration's word timestamps. The picture remains in its source order at normal speed; the export is 720 × 1280 pixels, 60 fps, H.264/AAC MP4.
 
