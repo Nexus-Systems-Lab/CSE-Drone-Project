@@ -2,6 +2,17 @@
 
 **IE3034 Control Systems Engineering | Four-member group project | 2026**
 
+## Project Team
+
+
+
+This project was developed collaboratively as part of the Embedded Systems Design module at SLIIT.
+
+- **Uvin** – [GitHub Profile](https://github.com/uvin-kaveesh)
+- **Sithumi** – [GitHub Profile](https://github.com/sithumi-sanilka)
+- **Koshika**
+- **Sanindi**
+
 An ESP32-based quadcopter prototype for roll and pitch stabilization, with an MPU6050 IMU, four brushless motors, a 4-in-1 ESC, an OLED status display, and a Wi-Fi tuning dashboard. The team first tested a small-frame coreless-motor prototype, then built the larger brushless version.
 
 ## Demonstration
