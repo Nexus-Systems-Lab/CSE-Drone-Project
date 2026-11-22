@@ -12,8 +12,6 @@ Play the project video directly on this page. The footage shows the prototype an
 | :---: | :---: | :---: |
 | &emsp;&emsp;&emsp; | https://github.com/user-attachments/assets/06ee024c-3a24-49d9-be64-d7df85800d6f | &emsp;&emsp;&emsp; |
 
-![Top view of the prototype](assets/prototype-top.jpg) ![Prototype test stand](assets/prototype-test-rig.jpg)
-
 ## Implemented control
 
 - ESP32 Arduino C++ firmware reads the MPU6050 over I²C and calibrates roll/pitch offsets and gyro bias while the frame is still.
@@ -35,6 +33,13 @@ Play the project video directly on this page. The footage shows the prototype an
 | SSD1306 OLED | Local attitude and output status |
 
 The final firmware maps GPIO25/26/27/14 to front-right/rear-right/front-left/rear-left ESC channels. Check physical wiring and motor rotation before powered use.
+
+<p align="center">
+  <img src="assets/prototype-top.jpg" alt="Top view of the quadcopter prototype" width="30%">
+  &nbsp;&nbsp;
+  <img src="assets/prototype-test-rig.jpg" alt="Quadcopter prototype on its test stand" width="30%">
+</p>
+<p align="center"><sub>Prototype photographs from the group report.</sub></p>
 
 ## Evidence and limitations
 
