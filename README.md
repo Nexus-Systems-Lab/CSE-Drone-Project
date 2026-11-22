@@ -58,8 +58,19 @@ The project report contains Simulink roll/pitch response plots, prototype photos
 
 ## Team contribution
 
-This was a four-member group project. Uvin Kaveesh worked on circuit assembly and wiring, sensor and calibration choices, initial PID tuning tests, ESP32 firmware, and staged testing. Other team members contributed to frame design, testing and documentation. Shared outcomes are presented as team work.
+## Team Contributions
 
+This project was collaboratively developed by four team members as part of the Control Systems Engineering (IE3034) module at SLIIT.
+
+- **Hardware Design & Integration:** Drone frame assembly, component integration, sensor connections, and motor interfacing.
+
+- **PID Control Implementation:** ESP32 programming, MPU6050 sensor interfacing, PID controller development, and motor control logic.
+
+- **Mathematical Modelling & Simulation:** System modelling, transfer function analysis, and MATLAB/Simulink simulations of roll and pitch stabilization.
+
+- **Web Interface & Testing:** Wi-Fi dashboard development, real-time monitoring, PID parameter tuning, and system testing.
+
+All team members contributed to the overall development, troubleshooting, and documentation of the project.
 ## Source
 
 Group assignment: `IE3034CSE_Group_no_01.pdf` (report referenced in the prior README; not stored in this repository).
