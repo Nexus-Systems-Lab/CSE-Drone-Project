@@ -58,8 +58,6 @@ The project report contains Simulink roll/pitch response plots, prototype photos
 
 ## Team contribution
 
-## Team Contributions
-
 This project was collaboratively developed by four team members as part of the Control Systems Engineering (IE3034) module at SLIIT.
 
 - **Hardware Design & Integration:** Drone frame assembly, component integration, sensor connections, and motor interfacing.
