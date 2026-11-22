@@ -6,7 +6,11 @@ An ESP32-based quadcopter prototype for roll and pitch stabilization, with an MP
 
 ## Demonstration
 
-[Watch the project video](https://github.com/user-attachments/assets/06ee024c-3a24-49d9-be64-d7df85800d6f). The footage shows the prototype and powered testing. It does not provide a measured free-flight stability dataset.
+Play the project video directly on this page. The footage shows the prototype and powered testing. It does not provide a measured free-flight stability dataset.
+
+| &emsp;&emsp;&emsp; | Project demonstration | &emsp;&emsp;&emsp; |
+| :---: | :---: | :---: |
+| &emsp;&emsp;&emsp; | https://github.com/user-attachments/assets/06ee024c-3a24-49d9-be64-d7df85800d6f | &emsp;&emsp;&emsp; |
 
 ![Top view of the prototype](assets/prototype-top.jpg) ![Prototype test stand](assets/prototype-test-rig.jpg)
 
