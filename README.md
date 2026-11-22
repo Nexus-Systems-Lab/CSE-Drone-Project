@@ -41,6 +41,7 @@ The project report contains Simulink roll/pitch response plots, prototype photos
 ## Repository contents
 
 - [`firmware/ESP32_PID_Balance/`](firmware/ESP32_PID_Balance/) — final roll/pitch control source and embedded dashboard.
+- [`firmware/dashboard.html`](firmware/dashboard.html) — standalone editable dashboard source; open the ESP32-hosted page for live device data.
 - [`firmware/tests/control_core_test.cpp`](firmware/tests/control_core_test.cpp) — native tests for controller math and mixer behavior.
 - [`firmware/README.txt`](firmware/README.txt) — firmware setup and technical limits.
 - [`docs/video-guide.md`](docs/video-guide.md) — demonstration transcript and scene guide.
