@@ -1,0 +1,254 @@
+// Generated from dashboard.html. Keep this file in sync when editing the dashboard.
+#pragma once
+#include <Arduino.h>
+static const char DASHBOARD_HTML[] PROGMEM = R"DRONEUI(<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESP32 PID Balance</title><style>
+:root{--bg:#070d1c;--card:#0e1a30;--line:#1c3150;--tx:#e8f1ff;--mu:#8ea4c4;--ac:#3aa0ff;--cy:#4fd8ff;--gr:#5ee6b0;--am:#ffc46b;--rd:#e5455c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px system-ui,sans-serif}
+.rail{position:fixed;left:0;top:0;bottom:0;width:56px;background:#0a1426;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:14px;z-index:6}
+.rail a{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:var(--mu);text-decoration:none;font-size:17px}.rail a:hover{background:#15264a;color:var(--cy)}
+main{max-width:1380px;margin:0 auto;padding:18px 20px 90px 76px}
+header,.row,.ch{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+h1{font-size:26px;margin:4px 0}h2{font-size:13px;margin:0;letter-spacing:1.2px;text-transform:uppercase;color:#b9cdea;font-weight:600}
+.eyebrow{color:var(--cy);font-size:12px;letter-spacing:2px}.muted,small{color:var(--mu);font-size:13px;line-height:1.6}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
+.ch{margin-bottom:10px}.pill{font:12px ui-monospace,monospace;padding:6px 12px;border-radius:99px;background:#112440;border:1px solid var(--line);color:var(--gr)}
+.grid{display:grid;gap:14px;margin:14px 0}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}.g21{grid-template-columns:2fr 1fr}
+.col{display:grid;gap:14px;align-content:start;min-width:0}.motors{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:14px 0}
+.number{font:600 34px ui-monospace,monospace;margin:8px 0;color:#8cd9ff}.unit{font:14px system-ui;color:#99aac3}
+button{background:#1b2f50;color:#fff;border:0;border-radius:9px;padding:10px 12px;font:600 13px system-ui;cursor:pointer}button:hover:not(:disabled){background:#24407a}
+button:disabled,input:disabled{opacity:.4;cursor:not-allowed}button.on{background:var(--ac)}
+.green{background:#3fc9a2;color:#06261e}.green:hover:not(:disabled){background:#56dfb8}.red{background:#dc4057;color:#fff}.red:hover:not(:disabled){background:#f05068}
+.stop{width:100%;font-size:20px;min-height:60px;position:sticky;bottom:10px;margin-top:18px;box-shadow:0 6px 20px #000a;z-index:5}
+input[type=range]{width:100%;accent-color:var(--cy);margin:10px 0;height:22px}
+input[type=number]{background:#09162b;color:#eef5ff;border:1px solid #2c4468;padding:9px;border-radius:6px;width:90px}
+.notice{background:#10283d;border-left:3px solid var(--cy);padding:10px 12px;margin:12px 0;font-size:13px;border-radius:0 8px 8px 0}
+#message{min-height:22px;font-size:14px;color:#ffd299;margin:8px 0}
+.key{font:12px ui-monospace,monospace;color:#9fe7d8}.buttonrow{display:flex;gap:7px;flex-wrap:wrap}.buttonrow button{flex:1}
+#telemetry{font:13px ui-monospace,monospace;white-space:pre-wrap;line-height:1.8;color:#cfe0f7}
+canvas.cv{width:100%;height:200px;display:block}canvas.spark{height:44px}canvas.tall{height:400px;touch-action:none;cursor:grab;border-radius:10px;border:1px solid var(--line)}
+.lg{font:12px ui-monospace,monospace;color:var(--mu)}.lg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin:0 4px 0 10px}
+.gauge{position:relative;width:104px;margin:4px auto}.gauge svg{width:100%;display:block}.gbg{fill:none;stroke:#1d3150;stroke-width:3}
+.gfg{fill:none;stroke:var(--cy);stroke-width:3;stroke-linecap:round;transition:stroke-dasharray .15s}
+.gt{position:absolute;inset:0;display:grid;place-content:center;text-align:center}.gt b{font:600 19px ui-monospace,monospace}
+.motor p{margin:4px 0;text-align:center}
+@media(max-width:1000px){.g3,.g2,.g21{grid-template-columns:1fr}.motors{grid-template-columns:1fr 1fr}.rail{display:none}main{padding-left:14px}}
+@media(max-width:550px){main{padding:12px}h1{font-size:22px}.number{font-size:29px}canvas.tall{height:300px}}
+</style>
+<nav class="rail"><a href="#top" title="Overview">◉</a><a href="#view3d" title="Drone view">✈</a><a href="#pid" title="PID graphs">∿</a><a href="#motors" title="Motors">⚙</a><a href="#tune" title="Tuning">≡</a></nav>
+<main id="top"><header><div><div class="eyebrow">ESP32 · PHYSICAL PWM · ROLL / PITCH</div><h1>PID balance control</h1><small>Verified mapping: M1 FR · M2 RR · M3 FL · M4 RL</small></div><div class="row"><span id="latency" class="muted">Latency —</span><div id="connection" class="pill">Connecting…</div></div></header>
+<div class="notice">Roll / pitch target: 0°. PID tuning prototype. Throttle values are commands in µs, not measured thrust. No yaw or altitude control.</div>
+<div class="row"><b id="state">Waiting for ESP32</b><div class="buttonrow"><button class="green" id="arm" disabled>ARM</button><button id="zero" disabled>ZERO THROTTLE</button><button id="reset">RESET / CALIBRATE</button></div></div><p id="message" role="status"></p>
+<div class="grid g3">
+<section><h2>ROLL · target 0°</h2><div class="number"><span id="roll">—</span><span class="unit"> °</span></div><canvas class="cv spark" id="spR"></canvas><small>Right down → negative</small></section>
+<section><h2>PITCH · target 0°</h2><div class="number"><span id="pitch">—</span><span class="unit"> °</span></div><canvas class="cv spark" id="spP"></canvas><small>Front down → negative</small></section>
+<section><h2>BASE THROTTLE</h2><div class="number"><span id="throttleValue">1000</span><span class="unit"> µs</span></div><label class="muted" for="throttle">Requested <span id="requested">1000</span> µs · T / G ±5 µs</label><input id="throttle" type="range" min="1000" max="1300" step="5" value="1000" disabled><div class="buttonrow"><button id="td" disabled>−5 µs</button><button id="tu" disabled>+5 µs</button></div></section>
+</div>
+<div class="grid g21">
+<section id="view3d"><div class="ch"><h2>Drone view <small>mirrors the real drone</small></h2><div class="buttonrow" style="flex:0 1 auto"><button data-v="3d" class="on">3D</button><button data-v="rear">REAR</button><button data-v="front">FRONT</button><button data-v="left">LEFT</button><button data-v="top">TOP</button><button id="demo">DEMO</button></div></div><canvas class="cv tall" id="view"></canvas><div class="buttonrow" style="margin-top:10px"><button id="invR">ROLL: NORMAL</button><button id="invP">PITCH: NORMAL</button></div></section>
+<div class="col"><section><div class="ch"><h2>Attitude</h2><span class="lg" id="lgA"></span></div><canvas class="cv" id="cA"></canvas></section><section><div class="ch"><h2>Gyro rate °/s</h2><span class="lg" id="lgG"></span></div><canvas class="cv" id="cG"></canvas></section></div>
+</div>
+<div class="grid g2" id="pid">
+<section><div class="ch"><h2>Roll PID</h2><span class="lg" id="lgR"></span></div><canvas class="cv" id="cR"></canvas><small>Output µs = P + I + D (limit ±100). I is derived: output − P − D.</small></section>
+<section><div class="ch"><h2>Pitch PID</h2><span class="lg" id="lgP"></span></div><canvas class="cv" id="cP"></canvas><small>Output µs = P + I + D (limit ±100). I is derived: output − P − D.</small></section>
+</div>
+<div class="motors" id="motors"></div>
+<div class="grid g21" id="tune">
+<section><div class="ch"><h2>Motor outputs µs</h2><span class="lg" id="lgM"></span></div><canvas class="cv" id="cM"></canvas></section>
+<section><h2 style="margin-bottom:10px">PID gains · edit while stopped</h2><p class="muted">Initial values need hardware tuning. Applied equally to roll and pitch; reset on reboot.</p><div class="row"><label class="muted">Kp <input id="kp" type="number" min="0" max="5" step="0.1" value="1.5"></label><label class="muted">Ki <input id="ki" type="number" min="0" max="1" step="0.01" value="0"></label><label class="muted">Kd <input id="kd" type="number" min="0" max="1" step="0.01" value="0.05"></label></div><div style="margin-top:12px"><button id="gains" style="width:100%">APPLY GAINS</button></div></section>
+</div>
+<section><h2 style="margin-bottom:10px">Live telemetry</h2><div id="telemetry">Waiting…</div></section>
+<button class="red stop" id="stop">■ STOP ALL · SPACE</button>
+<p class="muted">Q/A M1 trim · W/S M2 trim · E/D M3 trim · R/F M4 trim · T/G base throttle · Space STOP. One press = one step. Click this page first. Individual keys change trims; PID remains active. Graphs update at the dashboard poll rate (~6–7 Hz), not the 100 Hz control rate.</p></main>
+<script>
+const $=id=>document.getElementById(id);
+const SH=['M1 · FR','M2 · RR','M3 · FL','M4 · RL'],PIN=[25,26,27,14],KEYS=['Q / A','W / S','E / D','R / F'],MC=['#4fd8ff','#ffc46b','#7cffb2','#ff7aa8'];
+for(let i=1;i<=4;i++)$('motors').insertAdjacentHTML('beforeend',`<section class="motor"><div class="ch"><h2>${SH[i-1]}</h2><small>GPIO ${PIN[i-1]}</small></div><div class="gauge"><svg viewBox="0 0 36 36"><circle class="gbg" cx="18" cy="18" r="15.9155"/><circle class="gfg" id="gf${i}" cx="18" cy="18" r="15.9155" stroke-dasharray="0 100" transform="rotate(-90 18 18)"/></svg><div class="gt"><b id="motor${i}">1000</b><small>µs</small></div></div><p class="muted">Trim <b id="trimValue${i}">0</b> µs · <span class="key">${KEYS[i-1]}</span></p><input type="range" id="trim${i}" min="-40" max="40" step="5" value="0" disabled><div class="buttonrow"><button id="minus${i}" disabled>−5</button><button id="plus${i}" disabled>+5</button><button id="clear${i}" disabled>0</button></div></section>`);
+let armed=false,g=null,connected=false,busy=false,stopping=false,epoch=0,editing=false,lastData=0;
+let pending=new Map(),dragging=new Set(),latencyMs=0;
+const WIN=30,hist=[],clamp=(x,a,b)=>x<a?a:x>b?b:x,now=()=>performance.now()/1000;
+const V={yaw:-.55,el:.45,tyaw:-.55,tel:.45,roll:0,pitch:0,tr:0,tp:0,m:[1000,1000,1000,1000],tm:[1000,1000,1000,1000],trims:[0,0,0,0],base:1000,armed:false,spin:[0,0,0,0],demo:false,inR:1,inP:1};
+try{V.inR=localStorage.getItem('invR')==='1'?-1:1;V.inP=localStorage.getItem('invP')==='1'?-1:1;}catch(e){}
+function setInvLabels(){$('invR').textContent='ROLL: '+(V.inR>0?'NORMAL':'INVERTED');$('invP').textContent='PITCH: '+(V.inP>0?'NORMAL':'INVERTED');}
+function saveInv(){try{localStorage.setItem('invR',V.inR<0?'1':'0');localStorage.setItem('invP',V.inP<0?'1':'0');}catch(e){}}
+setInvLabels();
+$('invR').onclick=()=>{V.inR*=-1;setInvLabels();saveInv();};$('invP').onclick=()=>{V.inP*=-1;setInvLabels();saveInv();};
+function controls(on){armed=on;document.querySelectorAll('#throttle,#zero,#td,#tu,.motor input,.motor button').forEach(e=>e.disabled=!on);$('arm').disabled=on||!connected;['kp','ki','kd','gains'].forEach(id=>$(id).disabled=on);}
+function notice(text){$('message').textContent=text;}
+const sg=v=>(v>=0?'+':'')+v.toFixed(1);
+const lg=(id,items)=>{$(id).innerHTML=items.map(([c,n,v])=>`<i style="background:${c}"></i>${n} ${sg(v)}`).join('');};
+// Shows a sample in the graphs / stat cards / 3D view. Real data and demo data both come through here.
+function ingest(s){
+ const t=now(),on=s.armed&&s.throttle>1000;
+ const axis=(a,r,o)=>{if(!on)return[0,0,0,0];const p=-s.kp*a,d=-s.kd*r,raw=p+d;return[p,Math.abs(raw)<=100?o-raw:0,d,o];};
+ const [pR,iR,dR,oR]=axis(s.roll,s.rollRate,s.pidR),[pP,iP,dP,oP]=axis(s.pitch,s.pitchRate,s.pidP);
+ hist.push({t,roll:s.roll,pitch:s.pitch,rr:s.rollRate,pr:s.pitchRate,pR,iR,dR,oR,pP,iP,dP,oP,m:s.motors.slice()});
+ while(hist.length&&hist[0].t<t-WIN-2)hist.shift();
+ V.tr=s.roll;V.tp=s.pitch;V.tm=s.motors.slice();V.base=s.throttle;V.trims=s.trims.slice();V.armed=s.armed;
+ $('roll').textContent=sg(s.roll);$('pitch').textContent=sg(s.pitch);$('throttleValue').textContent=s.throttle;
+ for(let i=1;i<=4;i++){$('motor'+i).textContent=s.motors[i-1];$('gf'+i).setAttribute('stroke-dasharray',clamp((s.motors[i-1]-1000)/4,0,100)+' 100');}
+ lg('lgA',[['#4fd8ff','Roll',s.roll],['#ffc46b','Pitch',s.pitch]]);lg('lgG',[['#4fd8ff','R',s.rollRate],['#ffc46b','P',s.pitchRate]]);
+ lg('lgR',[['#4fd8ff','P',pR],['#ffd166','I',iR],['#ff7aa8','D',dR],['#7cffb2','Out',oR]]);
+ lg('lgP',[['#4fd8ff','P',pP],['#ffd166','I',iP],['#ff7aa8','D',dP],['#7cffb2','Out',oP]]);
+ $('lgM').innerHTML=s.motors.map((m,i)=>`<i style="background:${MC[i]}"></i>M${i+1} ${m}`).join('');
+}
+function render(s){
+ connected=true;$('connection').textContent='CONNECTED · 192.168.4.1';$('latency').textContent='HTTP '+latencyMs+' ms';controls(s.armed);g=s.g;
+ $('state').textContent=s.state+(s.state==='CALIBRATING'?' '+s.progress+'%':'');
+ $('arm').disabled=s.armed||!s.calibrated||!!s.fault||!s.imuOK;
+ $('reset').disabled=s.state==='CALIBRATING';$('gains').disabled=s.armed||s.state==='CALIBRATING';
+ if(!V.demo){lastData=performance.now();ingest(s);}
+ if(!dragging.has('throttle')&&!pending.has('throttle')){$('throttle').value=s.throttle;$('requested').textContent=s.throttle;}
+ for(let i=1;i<=4;i++){if(!dragging.has('trim'+i)&&!pending.has('trim'+i)){$('trim'+i).value=s.trims[i-1];$('trimValue'+i).textContent=s.trims[i-1];}}
+ $('telemetry').textContent=`Gains: Kp ${s.kp} Ki ${s.ki} Kd ${s.kd}\nPID roll: ${s.pidR.toFixed(1)} µs   pitch: ${s.pidP.toFixed(1)} µs\nGyro R/P: ${s.rollRate.toFixed(1)} / ${s.pitchRate.toFixed(1)} °/s\nLevel offsets: ${s.r0.toFixed(1)} / ${s.p0.toFixed(1)} °\nAccel g: ${s.accelG.map(x=>x.toFixed(2)).join(' / ')}\nTemperature: ${s.temp.toFixed(1)} °C · sample age ${s.sampleAge} ms`;
+ if(s.fault)notice(s.fault+' — STOP, then RESET while level.');
+}
+async function api(path,data){const c=new AbortController(),started=performance.now(),timer=setTimeout(()=>c.abort(),1100);try{const r=await fetch('/api/'+path,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/x-www-form-urlencoded'}:{},body:data?new URLSearchParams(data):undefined,signal:c.signal,cache:'no-store'});if(!r.ok)throw Error(await r.text());const result=await r.json();latencyMs=Math.round(performance.now()-started);return result;}finally{clearTimeout(timer);}}
+function lost(e){epoch++;pending.clear();g=null;connected=false;controls(false);$('connection').textContent='DISCONNECTED / SESSION LOST';$('latency').textContent='Latency —';notice(e.message||'Connection lost');}
+function queueThrottle(v){if(!armed||stopping)return;v=Math.max(1000,Math.min(1300,Math.round(v/5)*5));$('throttle').value=v;$('requested').textContent=v;pending.set('throttle',{path:'throttle',v});}
+function queueTrim(i,v){if(!armed||stopping)return;v=Math.max(-40,Math.min(40,Math.round(v/5)*5));$('trim'+i).value=v;$('trimValue'+i).textContent=v;pending.set('trim'+i,{path:'trim',id:i,v});}
+$('throttle').oninput=e=>queueThrottle(+e.target.value);$('tu').onclick=()=>queueThrottle(+$('throttle').value+5);$('td').onclick=()=>queueThrottle(+$('throttle').value-5);
+for(let i=1;i<=4;i++){$('trim'+i).oninput=e=>queueTrim(i,+e.target.value);$('plus'+i).onclick=()=>queueTrim(i,+$('trim'+i).value+5);$('minus'+i).onclick=()=>queueTrim(i,+$('trim'+i).value-5);$('clear'+i).onclick=()=>queueTrim(i,0);}
+document.querySelectorAll('input[type=range]').forEach(el=>{el.addEventListener('pointerdown',()=>dragging.add(el.id));el.addEventListener('pointerup',()=>dragging.delete(el.id));el.addEventListener('pointercancel',()=>dragging.delete(el.id));el.addEventListener('blur',()=>dragging.delete(el.id));});
+async function stop(){if(stopping)return;stopping=true;epoch++;pending.clear();dragging.clear();g=null;controls(false);try{render(await api('stop',{}));notice('All motors stopped; explicit ARM required.');}catch(e){lost(e);}finally{stopping=false;}}
+$('stop').onclick=stop;
+async function action(path,data={}){if(editing||stopping)return;editing=true;const token=++epoch;pending.clear();try{while(busy){await new Promise(resolve=>setTimeout(resolve,20));if(token!==epoch||stopping)return;}if(path==='arm')data={...data,g};const s=await api(path,data);if(token===epoch&&!stopping){render(s);notice(path==='arm'?'Armed at 1000 µs. Set base throttle to begin PID response.':path==='reset'?'Hold frame LEVEL and STILL during calibration.':'Updated.');}}catch(e){notice(e.message);}finally{editing=false;}}
+$('arm').onclick=()=>action('arm');$('reset').onclick=()=>action('reset');$('gains').onclick=()=>action('gains',{kp:$('kp').value,ki:$('ki').value,kd:$('kd').value});
+$('zero').onclick=()=>{pending.clear();queueThrottle(1000);};
+// Serialized requests; coalesce slider values. Disconnected pages never re-arm automatically.
+setInterval(async()=>{
+ if(busy||stopping||editing)return;busy=true;const token=epoch;
+ try{
+  if(armed){
+   const session=g;
+   if(pending.size){const [key,item]=pending.entries().next().value;pending.delete(key);const {path,...data}=item;const s=await api(path,{...data,g:session});if(token===epoch&&!stopping)render(s);}
+   else{const s=await api('beat',{g:session});if(token===epoch&&!stopping)render(s);}
+  }else{const s=await api('state');if(token===epoch&&!stopping){if(s.armed)await stop();else render(s);}}
+ }catch(e){if(token===epoch)lost(e);}finally{busy=false;}
+},150);
+const keys={q:[1,5],a:[1,-5],w:[2,5],s:[2,-5],e:[3,5],d:[3,-5],r:[4,5],f:[4,-5]};
+window.addEventListener('keydown',event=>{
+ if(event.ctrlKey||event.metaKey||event.altKey)return;
+ const t=event.target;if(t&&(t.isContentEditable||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||(t.tagName==='INPUT'&&t.type!=='range')))return;
+ const k=event.key.toLowerCase();
+ if(event.code==='Space'){event.preventDefault();if(!event.repeat)stop();return;}
+ if(!(k in keys)&&k!=='t'&&k!=='g')return;event.preventDefault();if(event.repeat||!armed||stopping)return;
+ if(k==='t')queueThrottle(+$('throttle').value+5);else if(k==='g')queueThrottle(+$('throttle').value-5);else{const [i,d]=keys[k];queueTrim(i,+$('trim'+i).value+d);}
+});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});window.addEventListener('pagehide',()=>navigator.sendBeacon('/api/stop',''));
+
+// ---------- Demo mode (display only; never sends anything to the drone) ----------
+$('demo').onclick=()=>{V.demo=!V.demo;$('demo').classList.toggle('on',V.demo);hist.length=0;if(!V.demo){V.tr=V.tp=0;V.tm=[1000,1000,1000,1000];V.base=1000;}};
+setInterval(()=>{
+ if(!V.demo)return;const t=now(),roll=12*Math.sin(t*.9),pitch=9*Math.sin(t*.6+1.2),rr=10.8*Math.cos(t*.9),pr=5.4*Math.cos(t*.6+1.2),T=1150;
+ const r=clamp(-1.5*roll-.05*rr,-100,100),p=clamp(-1.5*pitch-.05*pr,-100,100),m=[T+r+p,T+r-p,T-r+p,T-r-p].map(x=>Math.round(clamp(x,1000,1400)));
+ ingest({armed:true,throttle:T,kp:1.5,kd:.05,roll,pitch,rollRate:rr,pitchRate:pr,pidR:r,pidP:p,motors:m,trims:[0,0,0,0]});
+},100);
+
+// ---------- Charts ----------
+function chart(cv,series,o){
+ const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
+ if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);}
+ const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);
+ const mini=!!o.mini,L=mini?2:40,R=mini?2:8,T=mini?3:8,B=mini?3:18,pw=w-L-R,ph=h-T-B,t1=now();
+ let lo=o.min,hi=o.max;
+ if(o.sym){let m=o.span;for(const s of hist)for(const f of series)m=Math.max(m,Math.abs(f.get(s)));lo=-m*1.15;hi=m*1.15;}
+ const X=t=>L+(1-(t1-t)/WIN)*pw,Y=v=>T+(1-(v-lo)/(hi-lo))*ph;
+ if(!mini){
+  c.font='10px ui-monospace,monospace';c.textBaseline='middle';c.lineWidth=1;
+  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4,y=Y(v);c.strokeStyle='#1a2c4a';c.beginPath();c.moveTo(L,y);c.lineTo(w-R,y);c.stroke();c.fillStyle='#7f95b5';c.textAlign='right';c.fillText(v.toFixed(Math.abs(hi-lo)<10?1:0),L-5,y);}
+  c.textAlign='center';for(let k=0;k<=6;k++){const x=L+pw*k/6;c.strokeStyle='#14233d';c.beginPath();c.moveTo(x,T);c.lineTo(x,T+ph);c.stroke();c.fillStyle='#6b82a3';c.fillText(k===6?'now':'-'+(WIN-WIN*k/6)+'s',x,h-8);}
+ }
+ if(lo<0&&hi>0){c.strokeStyle=mini?'#24405f':'#35557f';c.lineWidth=1;c.beginPath();c.moveTo(L,Y(0));c.lineTo(w-R,Y(0));c.stroke();}
+ if(o.lines)for(const v of o.lines){if(v>lo&&v<hi){c.strokeStyle='rgba(229,69,92,.45)';c.setLineDash([4,4]);c.beginPath();c.moveTo(L,Y(v));c.lineTo(w-R,Y(v));c.stroke();c.setLineDash([]);}}
+ c.save();c.beginPath();c.rect(L,T,pw,ph);c.clip();c.lineJoin='round';
+ for(const f of series){c.strokeStyle=f.color;c.lineWidth=f.w||(mini?1.6:1.8);c.beginPath();let pt=null;
+  for(const s of hist){const x=X(s.t);if(x<L-1)continue;const y=Y(clamp(f.get(s),lo,hi));if(pt===null||s.t-pt>1)c.moveTo(x,y);else c.lineTo(x,y);pt=s.t;}c.stroke();}
+ c.restore();
+ if(!hist.length&&!mini){c.fillStyle='#6b82a3';c.font='12px system-ui';c.textAlign='center';c.fillText('waiting for data…',L+pw/2,T+ph/2);}
+}
+function charts(){
+ chart($('spR'),[{get:s=>s.roll,color:'#4fd8ff'}],{mini:1,sym:1,span:5});
+ chart($('spP'),[{get:s=>s.pitch,color:'#ffc46b'}],{mini:1,sym:1,span:5});
+ chart($('cA'),[{get:s=>s.roll,color:'#4fd8ff'},{get:s=>s.pitch,color:'#ffc46b'}],{sym:1,span:10});
+ chart($('cG'),[{get:s=>s.rr,color:'#4fd8ff'},{get:s=>s.pr,color:'#ffc46b'}],{sym:1,span:20});
+ chart($('cR'),[{get:s=>s.pR,color:'#4fd8ff'},{get:s=>s.iR,color:'#ffd166'},{get:s=>s.dR,color:'#ff7aa8'},{get:s=>s.oR,color:'#7cffb2',w:2.4}],{sym:1,span:30,lines:[100,-100]});
+ chart($('cP'),[{get:s=>s.pP,color:'#4fd8ff'},{get:s=>s.iP,color:'#ffd166'},{get:s=>s.dP,color:'#ff7aa8'},{get:s=>s.oP,color:'#7cffb2',w:2.4}],{sym:1,span:30,lines:[100,-100]});
+ chart($('cM'),[0,1,2,3].map(i=>({get:s=>s.m[i],color:MC[i]})),{min:1000,max:1400});
+}
+
+// ---------- 3D drone view ----------
+const VW={'3d':[-.55,.45],rear:[0,0],front:[Math.PI,0],left:[Math.PI/2,0],top:[0,1.5]};
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{[V.tyaw,V.tel]=VW[b.dataset.v];document.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x===b));});
+const vc=$('view');let vdrag=null;
+vc.addEventListener('pointerdown',e=>{vdrag=[e.clientX,e.clientY];vc.setPointerCapture(e.pointerId);vc.style.cursor='grabbing';});
+vc.addEventListener('pointermove',e=>{if(!vdrag)return;V.tyaw+=(e.clientX-vdrag[0])*.01;V.tel=clamp(V.tel+(e.clientY-vdrag[1])*.01,-.1,1.55);vdrag=[e.clientX,e.clientY];document.querySelectorAll('[data-v]').forEach(x=>x.classList.remove('on'));});
+['pointerup','pointercancel'].forEach(ev=>vc.addEventListener(ev,()=>{vdrag=null;vc.style.cursor='grab';}));
+function heat(m){const k=clamp((m-1000)/400,0,1);return[`hsl(${200-165*k},85%,${55+5*k}%)`,k];}
+function drawView(ts){
+ const cv=vc,dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
+ if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);}
+ const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
+ const dt=Math.min(.05,(ts-(drawView.l||ts))/1000);drawView.l=ts;
+ const live=V.demo||(lastData&&performance.now()-lastData<1500);
+ const k=Math.min(1,dt*12),k2=Math.min(1,dt*8);
+ V.roll+=(V.tr-V.roll)*k;V.pitch+=(V.tp-V.pitch)*k;V.yaw+=(V.tyaw-V.yaw)*k2;V.el+=(V.tel-V.el)*k2;
+ for(let i=0;i<4;i++){V.m[i]+=(V.tm[i]-V.m[i])*k;const hk=clamp((V.m[i]-1000)/400,0,1);if(live&&V.tm[i]>1000)V.spin[i]+=dt*(8+hk*40)*((i===0||i===3)?1:-1);}
+ const gr=c.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#0b1629');gr.addColorStop(1,'#060d1b');c.fillStyle=gr;c.fillRect(0,0,w,h);
+ const sc=Math.min(w*.16,h*.3),D=7,cx=w/2,cy=h*.52;
+ const cyw=Math.cos(V.yaw),syw=Math.sin(V.yaw),ce=Math.cos(V.el),se=Math.sin(V.el);
+ const P=(x,y,z)=>{const x1=x*cyw-z*syw,z1=x*syw+z*cyw;const y2=y*ce+z1*se,z2=z1*ce-y*se;const f=D/(D+z2);return{x:cx+x1*sc*f,y:cy-y2*sc*f,d:z2,f};};
+ const ar=V.roll*V.inR*Math.PI/180,ap=V.pitch*V.inP*Math.PI/180,sr=Math.sin(ar),cr=Math.cos(ar),sp=Math.sin(ap),cp=Math.cos(ap);
+ const A=(x,y,z)=>{const X=x*cr-y*sr,Y=x*sr+y*cr;return P(X,Y+z*sp,z*cp-Y*sp);};
+ const seg=(p,q)=>{c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();};
+ // ground grid + shadow + level ring (world-fixed)
+ c.lineWidth=1;c.strokeStyle='rgba(90,140,220,.16)';
+ for(let n=-4;n<=4;n++){seg(P(n*.6,-.95,-2.4),P(n*.6,-.95,2.4));seg(P(-2.4,-.95,n*.6),P(2.4,-.95,n*.6));}
+ c.fillStyle='rgba(0,0,0,.35)';c.beginPath();for(let n=0;n<=36;n++){const a=n/36*6.2832,p=P(.9*Math.cos(a),-.95,.9*Math.sin(a));n?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y);}c.fill();
+ c.strokeStyle='rgba(255,120,150,.5)';c.lineWidth=1.4;c.setLineDash([6,5]);c.beginPath();for(let n=0;n<=48;n++){const a=n/48*6.2832,p=P(1.35*Math.cos(a),0,1.35*Math.sin(a));n?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y);}c.stroke();c.setLineDash([]);
+ c.globalAlpha=live?1:.5;
+ const items=[],a=.8,MP=[[a,0,a],[a,0,-a],[-a,0,a],[-a,0,-a]],p0=A(0,0,0);
+ // arms (front arms orange)
+ [[0,'#d98a3d'],[2,'#d98a3d'],[1,'#7d8aa0'],[3,'#7d8aa0']].forEach(([i,col])=>{const m=MP[i],p1=A(m[0],m[1],m[2]);items.push({d:(p0.d+p1.d)/2+.05,fn:()=>{c.strokeStyle=col;c.lineWidth=Math.max(3,sc*.1*p0.f);c.lineCap='round';seg(p0,p1);}});});
+ // body box
+ const hx=.3,hy=.09,hz=.3,cor=[];for(const sx of[-1,1])for(const sy of[-1,1])for(const sz of[-1,1])cor.push(A(sx*hx,sy*hy,sz*hz));
+ // corner index = (sx>0?4:0)+(sy>0?2:0)+(sz>0?1:0)
+ [[[2,3,7,6],'#3a4f78'],[[0,1,5,4],'#16213a'],[[4,5,7,6],'#2b3f66'],[[0,1,3,2],'#24365a'],[[1,5,7,3],'#2f4670'],[[0,4,6,2],'#22345a']].forEach(([f,col])=>{const q=f.map(i=>cor[i]);items.push({d:q.reduce((s,p)=>s+p.d,0)/4,fn:()=>{c.fillStyle=col;c.strokeStyle='#0a1426';c.lineWidth=1;c.beginPath();q.forEach((p,j)=>j?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();c.fill();c.stroke();}});});
+ // front marker
+ const f1=A(-.12,.1,.3),f2=A(.12,.1,.3),f3=A(0,.1,.58);items.push({d:p0.d-.1,fn:()=>{c.fillStyle='#ffb04d';c.beginPath();c.moveTo(f1.x,f1.y);c.lineTo(f2.x,f2.y);c.lineTo(f3.x,f3.y);c.closePath();c.fill();}});
+ // motors + props
+ const hubs=[];
+ for(let i=0;i<4;i++){const m=MP[i],hub=A(m[0],.12,m[2]);hubs.push(hub);const [col,hk]=heat(V.m[i]);
+  items.push({d:hub.d-.2,fn:()=>{
+   c.fillStyle=col.replace('hsl','hsla').replace(')',`,${.1+.25*hk})`);c.strokeStyle=col;c.lineWidth=1.2;c.beginPath();
+   for(let n=0;n<=28;n++){const an=n/28*6.2832,p=A(m[0]+.55*Math.cos(an),.12,m[2]+.55*Math.sin(an));n?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y);}c.fill();c.stroke();
+   c.strokeStyle='#c7d2e6';c.lineWidth=Math.max(2,sc*.045*hub.f);c.lineCap='round';c.globalAlpha=(live?1:.5)*(hk>.3?.6:1);
+   for(const s of[V.spin[i],V.spin[i]+Math.PI])seg(hub,A(m[0]+.55*Math.cos(s),.12,m[2]+.55*Math.sin(s)));
+   c.globalAlpha=live?1:.5;c.fillStyle='#1b2740';c.beginPath();c.arc(hub.x,hub.y,Math.max(3,sc*.07*hub.f),0,6.2832);c.fill();}});}
+ items.sort((p,q)=>q.d-p.d).forEach(it=>{c.save();it.fn();c.restore();});
+ // labels
+ c.font='bold 11px ui-monospace,monospace';c.textAlign='center';c.textBaseline='middle';
+ for(let i=0;i<4;i++){const hub=hubs[i],ux=hub.x-p0.x,uy=hub.y-p0.y,len=Math.hypot(ux,uy)||1;
+  const lx=hub.x+(ux/len)*sc*.35+(ux>=0?1:-1)*sc*.45,ly=hub.y+(hub.d>p0.d?-1:1)*sc*.75;
+  const tr=V.trims[i]||0,l2=`${Math.round(V.m[i])} µs ${tr>=0?'+':''}${tr}`;
+  const bw=Math.max(c.measureText(SH[i]).width,c.measureText(l2).width)+14;
+  c.fillStyle='rgba(10,20,38,.82)';c.strokeStyle='#2a4468';c.lineWidth=1;c.beginPath();c.roundRect(lx-bw/2,ly-17,bw,34,6);c.fill();c.stroke();
+  c.fillStyle='#d7e5fa';c.fillText(SH[i],lx,ly-6);c.fillStyle=live?'#9fe7d8':'#6b82a3';c.font='11px ui-monospace,monospace';c.fillText(l2,lx,ly+7);c.font='bold 11px ui-monospace,monospace';}
+ const ft=A(0,.1,.95);c.fillStyle='#ffb04d';c.fillText('FRONT ▲',ft.x,ft.y);
+ c.globalAlpha=1;c.textAlign='left';c.textBaseline='alphabetic';
+ // overlay text
+ const ago=lastData?((performance.now()-lastData)/1000).toFixed(0)+' s ago':'never';
+ c.fillStyle=V.demo?'#ffc46b':live?'#5ee6b0':'#6b7d99';c.beginPath();c.arc(20,22,5,0,6.2832);c.fill();
+ c.font='bold 13px system-ui';c.fillText(V.demo?'DEMO MODE':live?(V.armed?'LIVE · ARMED':'LIVE · DISARMED'):'NO SIGNAL',32,27);
+ c.font='12px ui-monospace,monospace';c.fillStyle=live?'#cfe0f7':'#6b7d99';
+ const rd=Math.abs(V.roll)<1.5?'level':V.roll<0?'right down':'left down',pd=Math.abs(V.pitch)<1.5?'level':V.pitch<0?'front down':'front up';
+ c.fillText(`ROLL  ${sg(V.roll)}°  ${rd}`,16,48);c.fillText(`PITCH ${sg(V.pitch)}°  ${pd}`,16,65);c.fillText(`BASE  ${Math.round(V.base)} µs`,16,82);
+ c.textAlign='right';c.fillStyle='#6b82a3';c.fillText(V.demo?'simulated — not from drone':'live from ESP32',w-14,24);c.fillText('dashed ring = level (0°)',w-14,h-12);
+ c.textAlign='left';c.fillText('drag to rotate',14,h-12);
+ if(!live){c.textAlign='center';c.font='bold 15px system-ui';c.fillStyle='#ffc88a';c.fillText('NO SIGNAL FROM ESP32 · last data '+ago,w/2,h*.2);}
+}
+let lastChart=0;
+function frame(ts){requestAnimationFrame(frame);if(document.hidden)return;try{if(ts-lastChart>100){lastChart=ts;charts();}drawView(ts);}catch(e){console.error(e);}}
+requestAnimationFrame(frame);
+</script></html>
+)DRONEUI";
+
